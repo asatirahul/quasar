@@ -1,23 +1,23 @@
 \d .qudec
 /********* Public API ********/
 /wrapper function
-wrap:{[o;d] f:dec[o;d]; @[value ;string[o],":",f;{set[y;value z]}[;o;f]];}
+dec:{[o;d] f:wrap[o;d]; @[value ;string[o],":",f;{set[y;value z]}[;o;f]];}
 / remove decorator function/s
-unwrap:{[o;d] f:removeDec[o;d]; @[value ;string[o],":",f;{set[y;value z]}[;o;f]];}
+undec:{[o;d] f:removeDec[o;d]; @[value ;string[o],":",f;{set[y;value z]}[;o;f]];}
 / unwrap all- restore to original
 restore:{[o] o set restoreF o;}
 / get original function definition
 getOrigFD:{chkName x;value ns,ssr[string x;".";"_"]}
 / get original function
-getOrigF:{r:({last x}/)[{not x[0] like ".qdec.*"};(x;y)]0;`$ssr[6_string r;"_";"."]}
+getOrigF:{r:({last x}/)[{not (first x 0) like ".qudec.*"};(x 0;x 1)]0;`$ssr[6_string r;"_";"."]}
 / get original function args
-getOrigA:{$[2<>count x;x;-11h<>type x 0;x;x[0] like ".qdec.*";last x;.z.s last x]}
+getOrigA:{$[2<>count x;x;-11h<>type x 0;x;x[0] like ".qudec.*";last x;.z.s last x]}
 / get Decorators
-getDec:{chkName x;1_value ns,ssr[string x;".";"_"],"w"}
+getDecs:{chkName x;1_value ns,ssr[string x;".";"_"],"w"}
 
 // Internal functions and variables
-ns:".qdec."  / namespace prefix
-cns: `.qdec / current namesapce
+ns:".qudec."  / namespace prefix
+cns: `.qudec / current namesapce
 / normalize function
 normalize:{$[-11h=t:type x;value x;100h=t;x;'"function type not supported"]}
 / error functions
@@ -35,18 +35,18 @@ getDecN:{`$ns,x,"w"}
 isWrapped:{$[100h=t:type x;0b;-11h=t; (`$getName[x]) in system "f"; '"error1"]}
 / is new function
 / fix this. search for  alternative total safe  approach
-isNew:{not last[value x] like "*.qdec.*"}
+isNew:{not last[value x] like "*.qudec.*"}
 / create function
 createFunc:{n:`$ns,x;if[z;set[n;y]];n}
 / create decorators dictionary
 createDecLst:{n:getDecN x; if[z;n set y[0],()]; n set get[n],y 1;}
 / delete decorator
 deleteDecLst:{n:getDecN x;r:$[11=t:abs type y;get[n] except y;t in 5 6 7h;neg[y]_get n;e2[]];
-  $[(1>count r)|not any r like "*.qdec.*";e3[];n set r];}
+  $[(1>count r)|not any r like "*.qudec.*";e3[];n set r];}
 / compose decorator
 composeDec:{ssr[.Q.s1({y,enlist x}/)[-1;get getDecN x];"-1";y]}
 /decorate
-dec:{[o;d] chkName@'/:(o;d);n:getName o;no:normalize o;
+wrap:{[o;d] chkName@'/:(o;d);n:getName o;no:normalize o;
  c:isNew no;
  createDecLst[n;(createFunc[n;no;c];d);c];
  genDec[n;no]
