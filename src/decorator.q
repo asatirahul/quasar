@@ -20,19 +20,30 @@ ns:".qudec."  / namespace prefix
 cns: `.qudec / current namesapce
 / normalize function
 normalize:{$[-11h=t:type x;value x;100h=t;x;'"function type not supported"]}
-/ error functions
-e1:{'"not a fully qualified function name"}
+/ error output  handlers
 e2:{'"second argument can be -> symbol, symbol list, short,integer,long"}
 e3:{'"wrong arguments for unwrapping"}
-/ check name format
-chkName:{a:"_" sv "." vs string x;r::a;$[(3>count a)|(all "_"=3#a)|("_"<>a 0);e1[];a]}
-/chnf@' (`.test.f;`..f;`...u;`f;`f.r;`.tt.ff.r)
-/ get funciton name
+err:(!) . flip (("fname";"not a fully qualified function name");("type"; "Function type not supported"))
+error:{'err[x]}
+/
+ Check function name format.
+ Currently support only fully qualified name which contains namespsce name.
+ @param - symbol function_name
+ @return - boolean|error
+\
+chkName:{a:"_" sv "." vs string x;$[(3>count a)|(all "_"=3#a)|("_"<>a 0);error["fname"];1b]}
+
+/
+ Creates function name by replacing '.' with '_'
+ @param - symbol - function_name
+ @return - string - converted function_name
+\
 getName:{ssr[string x;".";"_"]}
+
 / get decorators dictionary name
 getDecN:{`$ns,x,"w"}
 / is already wrapped
-isWrapped:{$[100h=t:type x;0b;-11h=t; (`$getName[x]) in system "f"; '"error1"]}
+isWrapped:{$[100h=t:type x;0b;-11h=t; (`$getName[x]) in system "f"; error "type"]}
 / is new function
 / fix this. search for  alternative total safe  approach
 isNew:{not last[value x] like "*.qudec.*"}
