@@ -1,7 +1,10 @@
+\d .font
 /----------------- Public API-------------
 / reset functions
-coloroff:{1 "\033[0m";}; / reset/switch off color
-reset:{1 "\033c";}; / reset all styles
+colorReset:{if[se;1 esc_end];}; / reset/switch off color
+reset:{if[se;1 esc_reset];}; / reset all styles
+hardColorReset:{@[system;esc_end;::];}; / forced reset
+hardReset:{@[system;esc_reset;::];}; / forced reset all styles
 enableStyle:{se::1b}; / enable styling
 disableStyle:{se::0b}; / disable styling
 
@@ -56,7 +59,8 @@ blinkoff:{c8[25;x]};
 
 / -----------------Internal functions------------
 se:1b ; /enable style
-
+esc_end: "\033[0m"; / endin csi
+esc_reset: "\033c" / reset csi
 tostr:{$["\033" ~ first x;x;.Q.s1 x]}; / convert to str if its not a csi
 
 / base functions for colouring
@@ -65,3 +69,5 @@ csi256:{"\033[38;5;",string[x],"m",tostr[y],"\033[0m"}; / foreground csi using 2
 csi256bg:{"\033[48;5;",string[x],"m",tostr[y],"\033[0m"}; / background csi using 256 color code
 csirgb:{"\033[38;2;",(";" sv string x),"m",tostr[y],"\033[0m"}; / foreground csi using rgb color code
 csirgb_bg:{"\033[48;2;",(";" sv string x),"m",tostr[y],"\033[0m"}; / background csi using rgb color code
+
+\d .
