@@ -69,7 +69,7 @@ crgbb: esc,"48;2;"; / start esc seq for rgb background
 
 wrapped:{"\033" ~ first x}; / if wrapped with any style or original text
 
-tostr:{$[wrapped x;x;.Q.s x]}; / convert to str if its not a csi
+tostr:{if[wrapped x;:x];s:-1_.Q.s x; $["\r" ~ last s;-1_s;s]}; / convert to str if its not a csi
 
 / base functions for colouring
 csi8:{esc,string[x],"m",tostr[y],esc_end}; /  csi using 8 color code
