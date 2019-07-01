@@ -20,7 +20,7 @@ fgp:{$[not se; y;csirgb[x;y]]}; / set foreground colour in message using rgb col
 bgp:{$[not se;y;csirgb_bg[x;y]]}; / set background colour in message using Rgb color code if color enabled option is true
 
 / print function
-print:{$[se;1 x,"\r\n";show x];};
+print:{$[not se;show x;wrapped x;1 x,"\r\n";show x];};
 
 / functions for standard colors - foreground
 black:{fg[0;x]};
@@ -59,15 +59,23 @@ blinkoff:{c8[25;x]};
 
 / -----------------Internal functions------------
 se:1b ; /enable style
-esc_end: "\033[0m"; / endin csi
+esc: "\033["; / esc start
+esc_end: "\033[0m"; / ending csi
 esc_reset: "\033c" / reset csi
-tostr:{$["\033" ~ first x;x;.Q.s1 x]}; / convert to str if its not a csi
+c256f: esc,"38;5;"; / start esc seq for 256 foreground
+c256b:esc,"48;5;";  / start esc seq for 256 background
+crgbf: esc,"38;2;"; / start esc seq for rgb foreground
+crgbb: esc,"48;2;"; / start esc seq for rgb background
+
+wrapped:{"\033" ~ first x}; / if wrapped with any style or original text
+
+tostr:{$[wrapped x;x;.Q.s x]}; / convert to str if its not a csi
 
 / base functions for colouring
-csi8:{"\033[",string[x],"m",tostr[y],"\033[0m"}; /  csi using 8 color code
-csi256:{"\033[38;5;",string[x],"m",tostr[y],"\033[0m"}; / foreground csi using 256 color code
-csi256bg:{"\033[48;5;",string[x],"m",tostr[y],"\033[0m"}; / background csi using 256 color code
-csirgb:{"\033[38;2;",(";" sv string x),"m",tostr[y],"\033[0m"}; / foreground csi using rgb color code
-csirgb_bg:{"\033[48;2;",(";" sv string x),"m",tostr[y],"\033[0m"}; / background csi using rgb color code
+csi8:{esc,string[x],"m",tostr[y],esc_end}; /  csi using 8 color code
+csi256:{c256f,string[x],"m",tostr[y],esc_end}; / foreground csi using 256 color code
+csi256bg:{c256b,string[x],"m",tostr[y],esc_end}; / background csi using 256 color code
+csirgb:{crgbf,(";" sv string x),"m",tostr[y],esc_end}; / foreground csi using rgb color code
+csirgb_bg:{crgbb,(";" sv string x),"m",tostr[y],esc_end}; / background csi using rgb color code
 
 \d .
