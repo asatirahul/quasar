@@ -20,7 +20,7 @@ fgp:{$[not se; y;csirgb[x;y]]}; / set foreground colour in message using rgb col
 bgp:{$[not se;y;csirgb_bg[x;y]]}; / set background colour in message using Rgb color code if color enabled option is true
 
 / print function
-print:{$[not se;show x;wrapped x;1 x,"\r\n";show x];};
+print:{a:wrap;`.font.wrap set 0b;$[0=se & a;show x; 1 x,"\r\n"];};
 
 / functions for standard colors - foreground
 black:{fg[0;x]};
@@ -66,10 +66,15 @@ c256f: esc,"38;5;"; / start esc seq for 256 foreground
 c256b:esc,"48;5;";  / start esc seq for 256 background
 crgbf: esc,"38;2;"; / start esc seq for rgb foreground
 crgbb: esc,"48;2;"; / start esc seq for rgb background
+wrap:0b;
 
-wrapped:{"\033" ~ first x}; / if wrapped with any style or original text
-
-tostr:{if[wrapped x;:x];s:-1_.Q.s x; $["\r" ~ last s;-1_s;s]}; / convert to str if its not a csi
+tostr: {if[wrap;:x]; `.font.wrap set 1b; 
+        t:type x;
+        if[10h=t;:x];
+        s:-1_.Q.s x;
+        s:$["\n" ~ last s;-1_s;s]; 
+        s:$["\r" ~ last s;-1_s;s];
+     }; / convert to str if its not a csi
 
 / base functions for colouring
 csi8:{esc,string[x],"m",tostr[y],esc_end}; /  csi using 8 color code
