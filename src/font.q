@@ -71,9 +71,10 @@ wrap:0b;
 tostr: {if[wrap;:x]; `.font.wrap set 1b; 
         t:type x;
         if[10h=t;:x];
-        s:-1_.Q.s x;
+        s:.Q.s x;
         s:$["\n" ~ last s;-1_s;s]; 
         s:$["\r" ~ last s;-1_s;s];
+        s
      }; / convert to str if its not a csi
 
 / base functions for colouring
