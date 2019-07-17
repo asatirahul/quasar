@@ -9,7 +9,7 @@ restore:{[o] o set restoreF o;}
 / get original function definition
 getOrigFD:{chkName x;value ns,ssr[string x;".";"_"]}
 / get original function
-getOrigF:{r:({last x}/)[{not (first x 0) like ".qudec.*"};(x 0;x 1)]0;`$ssr[6_string r;"_";"."]}
+getOrigF:{r:({last x}/)[{not (first x 0) like ".qudec.*"};(x 0;x 1)]0;`$ssr[7_string r;"_";"."]}
 / get original function args
 getOrigA:{$[2<>count x;x;-11h<>type x 0;x;x[0] like ".qudec.*";last x;.z.s last x]}
 / get Decorators
