@@ -9,7 +9,7 @@ restore:{[o] o set restoreF o;}
 / get original function definition
 getOrigFD:{chkName x;value ns,ssr[string x;".";"_"]}
 / get original function
-getOrigF:{r:({last x}/)[{not (first x 0) like ".qudec.*"};(x 0;x 1)]0;`$ssr[7_string r;"_";"."]}
+getOrigF:{r:({last x}/)[{not (first x 0) like ".qudec.*"};(x 0;x 1)]0;`$ssr[7_string r;sep;"."]}
 / get original function args
 getOrigA:{$[2<>count x;x;-11h<>type x 0;x;x[0] like ".qudec.*";last x;.z.s last x]}
 / get Decorators
@@ -20,6 +20,7 @@ getDecs:{chkName x;1_value ns,ssr[string x;".";"_"],"w"}
 
 ns:".qudec."  / namespace prefix
 cns: `.qudec / current namesapce
+sep: "__" / name separator
 / error output  handlers
 e2:{'"second argument can be -> symbol, symbol list, short,integer,long"}
 e3:{'"wrong arguments for unwrapping"}
@@ -38,13 +39,14 @@ normalize:{$[-11h=t:type x;value x;100h=t;x;'"function type not supported"]}
  * @param - symbol - function_name
  * @return - boolean|error
 \
-chkName:{a:"_" sv "." vs string x;$[(3>count a)|(all "_"=3#a)|("_"<>a 0);error["fname"];1b]}
+
+chkName:{a:string x;$[(3>count a)|(all "."=3#a)|("."<>a 0);error["fname"];1b]}
 /
  * Creates function name by replacing '.' with '_'
  * @param - symbol - function_name
  * @return - string - converted function_name
 \
-getName:{ssr[string x;".";"_"]}
+getName:{ssr[string x;".";sep]}
 /
 * get decorator list name to hold decorator functions for a decorated function
 * @param - string - full internal function name(getName output)
