@@ -13,7 +13,7 @@ getOrigF:{r:({last x}/)[{not (first x 0) like ".qudec.*"};(x 0;x 1)]0;`$ssr[7_st
 / get original function args
 getOrigA:{$[2<>count x;x;-11h<>type x 0;x;x[0] like ".qudec.*";last x;.z.s last x]}
 / get Decorators
-getDecs:{chkName x;1_value ns,ssr[string x;".";"_"],"w"}
+getDecs:{chkName x;1_value ns,ssr[string x;".";sep],"w"}
 
 / ************************************************************************************* \
 / ***** Internal functions and variables ****** \
